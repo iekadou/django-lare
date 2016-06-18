@@ -62,7 +62,7 @@ setup(name='django-lare',
       package_data=get_package_data('django_lare'),
       py_modules=['django-lare'],
       classifiers=[
-          'Development Status :: 4 - Beta',
+          'Development Status :: 5 - Production/Stable',
           'Environment :: Web Environment',
           'Framework :: Django',
           'Intended Audience :: Developers',
