@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.template.base import Library, TemplateSyntaxError, FilterExpression
+from django.template.base import TemplateSyntaxError, FilterExpression
+from django.template import Library
 from django.template.loader import get_template  # import to solve ImportErrors
 from django.template.loader_tags import ExtendsNode
 

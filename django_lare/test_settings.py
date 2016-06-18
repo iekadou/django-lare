@@ -77,10 +77,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django_lare.middlewares.LareMiddleware'
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'tests'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -114,13 +113,33 @@ import django
 if django.VERSION < (1, 3):
     INSTALLED_APPS += ('staticfiles',)
 
-
 # django lare
-from django.template import add_to_builtins
-add_to_builtins('django_lare.templatetags.lare_extends',)
-
-TEMPLATE_CONTEXT_PROCESSORS = ('django_lare.context_processors.lare_information',)
-
 INSTALLED_APPS += ('django_lare', )
+
+MIDDLEWARE_CLASSES += (
+    'django_lare.middlewares.LareMiddleware',
+)
+
+if django.VERSION <= (1, 8):
+    from django.template.base import add_to_builtins
+    add_to_builtins('django_lare.templatetags.lare_extends',)
+    TEMPLATE_CONTEXT_PROCESSORS = ('django_lare.context_processors.lare_information',)
+else:
+    import django
+    django.setup()
+    TEMPLATES = [{
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            'django_lare/templates',
+        ],
+        'OPTIONS': {
+            'context_processors': [
+                'django_lare.context_processors.lare_information',
+            ],
+            'builtins': [
+                'django_lare.templatetags.lare_extends',
+            ],
+        },
+    }]
 
 DEFAULT_LARE_TEMPLATE = "django_lare/lare.html"
