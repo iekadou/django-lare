@@ -19,8 +19,7 @@ There are just two steps needed to install django-lare:
     MIDDLEWARE_CLASSES += (
         'django_lare.middlewares.LareMiddleware',
     )
-
-    if django.VERSION <= (1, 8):
+    if django.VERSION <= (1, 9):
         from django.template.base import add_to_builtins
         add_to_builtins('django_lare.templatetags.lare_extends',)
         TEMPLATE_CONTEXT_PROCESSORS = ('django_lare.context_processors.lare_information',)
