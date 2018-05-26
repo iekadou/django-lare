@@ -29,7 +29,11 @@ def main():
 
     test_runner = TestRunner()
 
-    failures = test_runner.run_tests(['django_lare'])
+    test_module_name = 'django_lare.tests'
+    if django.VERSION[0] == 1 and django.VERSION[1] < 6:
+        test_module_name = 'tests'
+
+    failures = test_runner.run_tests([test_module_name])
 
     sys.exit(failures)
 

@@ -85,7 +85,7 @@ else:
         'django.contrib.messages.middleware.MessageMiddleware',
     )
 
-ROOT_URLCONF = 'tests'
+ROOT_URLCONF = 'django_lare.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

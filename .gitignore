@@ -6,3 +6,4 @@ django_lare.egg-info
 dist
 venv
 venv3
+.tox
