@@ -30,7 +30,7 @@ elif DJANGO_VERSION <= (2,0):
         url(r'^page2/$',                                Page2View.as_view(),                    name='page_2'),
         url(r'^no-lare-page/$',                         NoLareView.as_view(),                  name='no_lare_page'),
     ]
-    from django.core.urlresolvers import reverse
+    from django.urls import reverse
 
 else:
     from django.urls import include, path
