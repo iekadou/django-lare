@@ -65,19 +65,25 @@ MEDIA_URL = ''
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'u@x-aj9(hoh#rb-^ymf#g2jx_hp0vj7u5#b@ag1n^seu9e!%cy'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-)
+import django
+
+if django.VERSION >= (1,10):
+    MIDDLEWARE = (
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    )
+else:
+    MIDDLEWARE_CLASSES = (
+        'django.middleware.common.CommonMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    )
 
 ROOT_URLCONF = 'tests'
 
@@ -108,17 +114,12 @@ PASSWORD_HASHERS = (
 
 AUTH_USER_MODEL = 'auth.User'
 
-import django
-
 if django.VERSION < (1, 3):
     INSTALLED_APPS += ('staticfiles',)
 
 # django lare
 INSTALLED_APPS += ('django_lare', )
 
-MIDDLEWARE_CLASSES += (
-    'django_lare.middlewares.LareMiddleware',
-)
 if django.VERSION >= (1, 7):
     import django
     django.setup()
@@ -126,6 +127,9 @@ if django.VERSION <= (1, 9):
     from django.template.base import add_to_builtins
     add_to_builtins('django_lare.templatetags.lare_extends',)
     TEMPLATE_CONTEXT_PROCESSORS = ('django_lare.context_processors.lare_information',)
+    MIDDLEWARE_CLASSES += (
+        'django_lare.middlewares.LareMiddleware',
+    )
 else:
     TEMPLATES = [{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -141,5 +145,33 @@ else:
             ],
         },
     }]
+if django.VERSION >= (1,10):
+    MIDDLEWARE += (
+        'django_lare.middlewares.LareMiddleware',
+    )
+    TEMPLATES = [{
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            'django_lare/templates',
+        ],
+        'OPTIONS': {
+            'context_processors': [
+                'django_lare.context_processors.lare_information',
+            ],
+            'builtins': [
+                'django_lare.templatetags.lare_extends',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ]
+        },
+    }]
+else:
+    # List of callables that know how to import templates from various sources.
+    TEMPLATE_LOADERS = (
+        'django.template.loaders.filesystem.Loader',
+        'django.template.loaders.app_directories.Loader',
+    )
 
 DEFAULT_LARE_TEMPLATE = "django_lare/lare.html"

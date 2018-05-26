@@ -9,3 +9,12 @@ class LareMiddleware(object):
         if request.lare.is_enabled():
             response['X-LARE-VERSION'] = request.lare.version
         return response
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        self.process_request(request)
+        response = self.get_response(request)
+        self.process_response(request, response)
+        return response
