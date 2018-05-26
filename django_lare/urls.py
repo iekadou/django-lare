@@ -28,13 +28,13 @@ elif DJANGO_VERSION <= (2,0):
     ]
 
 else:
-    from django.urls import include, path
+    from django.urls import include, re_path
     urlpatterns = [
-        path(r'^page1/$',                                Page1View.as_view(),                    name='page_1'),
-        path(r'^page1/content1/$',                       Page1Content1View.as_view(),            name='content_1'),
-        path(r'^page1/content1/inner_content1/$',        Page1Content1InnerContent1View.as_view(),            name='inner_content_1'),
-        path(r'^page1/content1/inner_content2/$',        Page1Content1InnerContent2View.as_view(),            name='inner_content_2'),
-        path(r'^page1/content2/$',                       Page1Content2View.as_view(),            name='content_2'),
-        path(r'^page2/$',                                Page2View.as_view(),                    name='page_2'),
-        path(r'^no-lare-page/$',                         NoLareView.as_view(),                  name='no_lare_page'),
+        re_path(r'^page1/$',                                Page1View.as_view(),                    name='page_1'),
+        re_path(r'^page1/content1/$',                       Page1Content1View.as_view(),            name='content_1'),
+        re_path(r'^page1/content1/inner_content1/$',        Page1Content1InnerContent1View.as_view(),            name='inner_content_1'),
+        re_path(r'^page1/content1/inner_content2/$',        Page1Content1InnerContent2View.as_view(),            name='inner_content_2'),
+        re_path(r'^page1/content2/$',                       Page1Content2View.as_view(),            name='content_2'),
+        re_path(r'^page2/$',                                Page2View.as_view(),                    name='page_2'),
+        re_path(r'^no-lare-page/$',                         NoLareView.as_view(),                  name='no_lare_page'),
     ]
