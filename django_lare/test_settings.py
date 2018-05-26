@@ -127,9 +127,6 @@ if django.VERSION <= (1, 9):
     from django.template.base import add_to_builtins
     add_to_builtins('django_lare.templatetags.lare_extends',)
     TEMPLATE_CONTEXT_PROCESSORS = ('django_lare.context_processors.lare_information',)
-    MIDDLEWARE_CLASSES += (
-        'django_lare.middlewares.LareMiddleware',
-    )
 else:
     TEMPLATES = [{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -172,6 +169,9 @@ else:
     TEMPLATE_LOADERS = (
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
+    )
+    MIDDLEWARE_CLASSES += (
+        'django_lare.middlewares.LareMiddleware',
     )
 
 DEFAULT_LARE_TEMPLATE = "django_lare/lare.html"
