@@ -18,7 +18,7 @@ if DJANGO_VERSION < (1,10):
         url(r'^page2/$',                                Page2View.as_view(),                    name='page_2'),
         url(r'^no-lare-page/$',                         NoLareView.as_view(),                  name='no_lare_page'),
     )
-    from django.core.urlresolvers import reverse
+    from django.core.urlresolvers import reverse_lazy
 elif DJANGO_VERSION <= (2,0):
     from django.conf.urls import include, url
     urlpatterns = [
@@ -30,7 +30,7 @@ elif DJANGO_VERSION <= (2,0):
         url(r'^page2/$',                                Page2View.as_view(),                    name='page_2'),
         url(r'^no-lare-page/$',                         NoLareView.as_view(),                  name='no_lare_page'),
     ]
-    from django.urls import reverse
+    from django.urls import reverse_lazy
 
 else:
     from django.urls import include, path
@@ -43,7 +43,7 @@ else:
         path(r'^page2/$',                                Page2View.as_view(),                    name='page_2'),
         path(r'^no-lare-page/$',                         NoLareView.as_view(),                  name='no_lare_page'),
     ]
-    from django.urls import reverse
+    from django.urls import reverse_lazy
 
 
 
@@ -62,7 +62,7 @@ class TestLareRequests(TestCase):
     # testing page level namespace
     def test_page_1_no_lare(self):
         client = Client()
-        response = client.get(reverse('page_1'))
+        response = client.get(reverse_lazy('page_1'))
         self.assertContains(response, self.page_1_string)
         self.assertContains(response, '<html>')
         self.assertNotContains(response, '<lare-body>')
@@ -70,7 +70,7 @@ class TestLareRequests(TestCase):
 
     def test_page_1_lare_with_namespace(self):
         client = Client()
-        response = client.get(reverse('page_1'), **{'HTTP_X_LARE': 'Site1.Page2'})
+        response = client.get(reverse_lazy('page_1'), **{'HTTP_X_LARE': 'Site1.Page2'})
         self.assertContains(response, self.page_1_string)
         self.assertContains(response, '<lare-body>')
         self.assertNotContains(response, '<html>')
@@ -78,7 +78,7 @@ class TestLareRequests(TestCase):
 
     def test_page_1_lare_different_namespace(self):
         client = Client()
-        response = client.get(reverse('page_1'), **{'HTTP_X_LARE': 'Site2'})
+        response = client.get(reverse_lazy('page_1'), **{'HTTP_X_LARE': 'Site2'})
         self.assertContains(response, self.page_1_string)
         self.assertNotContains(response, '<lare-body>')
         self.assertContains(response, '<html>')
@@ -87,7 +87,7 @@ class TestLareRequests(TestCase):
     # testing content level namespace
     def test_content_1_no_lare(self):
         client = Client()
-        response = client.get(reverse('content_1'))
+        response = client.get(reverse_lazy('content_1'))
         self.assertContains(response, self.page_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, '<html>')
@@ -96,7 +96,7 @@ class TestLareRequests(TestCase):
 
     def test_content_1_lare_current_namespace(self):
         client = Client()
-        response = client.get(reverse('content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content1'})
+        response = client.get(reverse_lazy('content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content1'})
         self.assertNotContains(response, self.page_1_string)
         self.assertNotContains(response, self.content_1_string)
         self.assertContains(response, '<lare-body>')
@@ -105,7 +105,7 @@ class TestLareRequests(TestCase):
 
     def test_content_1_lare_page_namespace(self):
         client = Client()
-        response = client.get(reverse('content_1'), **{'HTTP_X_LARE': 'Site1.Page1'})
+        response = client.get(reverse_lazy('content_1'), **{'HTTP_X_LARE': 'Site1.Page1'})
         self.assertNotContains(response, self.page_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, '<lare-body>')
@@ -114,7 +114,7 @@ class TestLareRequests(TestCase):
 
     def test_content_1_lare_content_namespace(self):
         client = Client()
-        response = client.get(reverse('content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content2'})
+        response = client.get(reverse_lazy('content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content2'})
         self.assertNotContains(response, self.page_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, '<lare-body>')
@@ -123,7 +123,7 @@ class TestLareRequests(TestCase):
 
     def test_content_1_lare_different_page_namespace(self):
         client = Client()
-        response = client.get(reverse('content_1'), **{'HTTP_X_LARE': 'Site1.Page2'})
+        response = client.get(reverse_lazy('content_1'), **{'HTTP_X_LARE': 'Site1.Page2'})
         self.assertContains(response, self.page_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, '<lare-body>')
@@ -132,7 +132,7 @@ class TestLareRequests(TestCase):
 
     def test_content_1_lare_different_site_namespace(self):
         client = Client()
-        response = client.get(reverse('content_1'), **{'HTTP_X_LARE': 'Site2.Page1'})
+        response = client.get(reverse_lazy('content_1'), **{'HTTP_X_LARE': 'Site2.Page1'})
         self.assertContains(response, self.page_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertNotContains(response, '<lare-body>')
@@ -142,7 +142,7 @@ class TestLareRequests(TestCase):
     # testing inner_content level namespace
     def test_inner_content_1_no_lare(self):
         client = Client()
-        response = client.get(reverse('inner_content_1'))
+        response = client.get(reverse_lazy('inner_content_1'))
         self.assertContains(response, self.inner_content_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, self.page_1_string)
@@ -152,7 +152,7 @@ class TestLareRequests(TestCase):
 
     def test_inner_content_1_lare_with_namespace(self):
         client = Client()
-        response = client.get(reverse('inner_content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content1.InnerContent2'})
+        response = client.get(reverse_lazy('inner_content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content1.InnerContent2'})
         self.assertContains(response, self.inner_content_1_string)
         self.assertNotContains(response, self.content_1_string)
         self.assertNotContains(response, self.page_1_string)
@@ -162,7 +162,7 @@ class TestLareRequests(TestCase):
 
     def test_inner_content_1_lare_different_content_namespace(self):
         client = Client()
-        response = client.get(reverse('inner_content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content2'})
+        response = client.get(reverse_lazy('inner_content_1'), **{'HTTP_X_LARE': 'Site1.Page1.Content2'})
         self.assertContains(response, self.inner_content_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertNotContains(response, self.page_1_string)
@@ -172,7 +172,7 @@ class TestLareRequests(TestCase):
 
     def test_inner_content_1_lare_different_page_namespace(self):
         client = Client()
-        response = client.get(reverse('inner_content_1'), **{'HTTP_X_LARE': 'Site1.Page2'})
+        response = client.get(reverse_lazy('inner_content_1'), **{'HTTP_X_LARE': 'Site1.Page2'})
         self.assertContains(response, self.inner_content_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, self.page_1_string)
@@ -182,7 +182,7 @@ class TestLareRequests(TestCase):
 
     def test_inner_content_1_lare_different_site_namespace(self):
         client = Client()
-        response = client.get(reverse('inner_content_1'), **{'HTTP_X_LARE': 'Site2.Page1.Content1'})
+        response = client.get(reverse_lazy('inner_content_1'), **{'HTTP_X_LARE': 'Site2.Page1.Content1'})
         self.assertContains(response, self.inner_content_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, self.page_1_string)
@@ -196,7 +196,7 @@ class TestLareRequests(TestCase):
         versions[len(versions)-1] = "{0}".format(int(versions[len(versions)-1])-1)
         version = '.'.join(versions)
         client = Client()
-        response = client.get(reverse('inner_content_1'), **{'HTTP_X_LARE_VERSION': version, 'HTTP_X_LARE': 'Site1.Page1.Content2'})
+        response = client.get(reverse_lazy('inner_content_1'), **{'HTTP_X_LARE_VERSION': version, 'HTTP_X_LARE': 'Site1.Page1.Content2'})
         self.assertContains(response, self.inner_content_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertContains(response, self.page_1_string)
@@ -209,7 +209,7 @@ class TestLareRequests(TestCase):
         versions[len(versions)-1] = "{0}".format(int(versions[len(versions)-1])+1)
         version = '.'.join(versions)
         client = Client()
-        response = client.get(reverse('inner_content_1'), **{'HTTP_X_LARE_VERSION': version, 'HTTP_X_LARE': 'Site1.Page1.Content2'})
+        response = client.get(reverse_lazy('inner_content_1'), **{'HTTP_X_LARE_VERSION': version, 'HTTP_X_LARE': 'Site1.Page1.Content2'})
         self.assertContains(response, self.inner_content_1_string)
         self.assertContains(response, self.content_1_string)
         self.assertNotContains(response, self.page_1_string)
@@ -220,14 +220,14 @@ class TestLareRequests(TestCase):
     # testing non lare page
     def test_non_lare_page(self):
         client = Client()
-        response = client.get(reverse('no_lare_page'))
+        response = client.get(reverse_lazy('no_lare_page'))
         self.assertContains(response, self.no_lare_page_string)
         self.assertContains(response, '<html>')
         self.assertNotContains(response, '<lare-body>')
 
     def test_non_lare_page_with_namespace(self):
         client = Client()
-        response = client.get(reverse('no_lare_page'), **{'HTTP_X_LARE': 'Site2.Page1.Content1'})
+        response = client.get(reverse_lazy('no_lare_page'), **{'HTTP_X_LARE': 'Site2.Page1.Content1'})
         self.assertContains(response, self.no_lare_page_string)
         self.assertContains(response, '<html>')
         self.assertNotContains(response, '<lare-body>')
