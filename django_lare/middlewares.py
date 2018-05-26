@@ -10,10 +10,10 @@ class LareMiddleware(object):
             response['X-LARE-VERSION'] = request.lare.version
         return response
 
-    def __init__(self, get_response):
+    def __init__(self, get_response=None):
         self.get_response = get_response
 
-    def __call__(self, request):
+    def __call__(self, request=None):
         self.process_request(request)
         response = self.get_response(request)
         self.process_response(request, response)
